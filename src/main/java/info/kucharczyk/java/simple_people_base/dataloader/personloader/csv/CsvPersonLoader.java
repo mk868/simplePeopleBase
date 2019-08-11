@@ -4,6 +4,7 @@ import info.kucharczyk.java.simple_people_base.dataloader.personloader.PersonLoa
 import info.kucharczyk.java.simple_people_base.model.Contact;
 import info.kucharczyk.java.simple_people_base.model.Person;
 import info.kucharczyk.java.simple_people_base.dataloader.source.SingleFileSource;
+import info.kucharczyk.java.simple_people_base.model.factory.ContactFactory;
 
 import java.io.*;
 
@@ -11,10 +12,12 @@ public class CsvPersonLoader implements PersonLoader { // TODO exclude "CSVLoade
     private BufferedReader bufReader;
     private FileReader fileReader;
     private Person next;
+    private ContactFactory contactFactory;
 
     public CsvPersonLoader(SingleFileSource source) throws FileNotFoundException {
         fileReader = new FileReader(source.getPath());
         bufReader = new BufferedReader(fileReader);
+        contactFactory = new ContactFactory();
         loadNext();
     }
 
@@ -41,7 +44,7 @@ public class CsvPersonLoader implements PersonLoader { // TODO exclude "CSVLoade
             if (value.isEmpty()) {
                 continue;
             }
-            Contact contact = Contact.fromString(value);
+            Contact contact = contactFactory.createContact(value);
             person.addContact(contact);
         }
 
